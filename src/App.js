@@ -11,7 +11,7 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
   function handleSelectMovie(id) {
@@ -37,6 +37,7 @@ export default function App() {
       try {
         setIsLoading(true);
         setError("");
+        handlecloseMovie();
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
           { signal: controller.signal }
@@ -257,6 +258,18 @@ function MovieDetails({ selectedId, watched, onCloseMovie, onAddWatched }) {
       document.title = "usePopcorn";
     };
   }, [title]);
+
+  useEffect(() => {
+    function callBack(e) {
+      if (e.code === "Escape") {
+        onCloseMovie();
+      }
+    }
+    document.addEventListener("keydown", callBack);
+    return () => {
+      document.removeEventListener("keydown", callBack);
+    };
+  }, [onCloseMovie]);
 
   return (
     <div className="details">
