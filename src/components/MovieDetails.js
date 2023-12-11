@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import StarRating from "./StartRating";
 import Loader from "./Loader";
 import { KEY } from "../App";
+import { useKey } from "../hooks/useKey";
 
 export default function MovieDetails({
   selectedId,
@@ -14,6 +15,8 @@ export default function MovieDetails({
   const [userRating, setUserRating] = useState("");
 
   const countRef = useRef(0);
+
+  useKey("Escape", onCloseMovie);
 
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
@@ -73,18 +76,6 @@ export default function MovieDetails({
       document.title = "usePopcorn";
     };
   }, [title]);
-
-  useEffect(() => {
-    function callBack(e) {
-      if (e.code === "Escape") {
-        onCloseMovie();
-      }
-    }
-    document.addEventListener("keydown", callBack);
-    return () => {
-      document.removeEventListener("keydown", callBack);
-    };
-  }, [onCloseMovie]);
 
   return (
     <div className="details">
